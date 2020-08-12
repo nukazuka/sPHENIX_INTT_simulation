@@ -1,0 +1,52 @@
+# Macro file for example B4
+# Can be run in batch, without graphic
+# or interactively: Idle> /control/execute run1.mac
+
+# Change the default number of workers (in multi-threading mode)
+#/run/numberOfThreads 4
+
+# Initialize kernel
+/run/initialize
+
+###########################################
+# my useless commands                     
+# /cal/detector/isSurroundings false      
+# /cal/detector/isSurroundings true
+# /cal/detector/wallThickness 0 cm
+###########################################
+
+########################################################
+# Output settings                                      #
+########################################################
+
+# A tag to be added to the output file name
+#/cal/run/tag test_data
+
+# Set a path to the output directory if needed
+#/cal/run/dir data/aaa
+
+########################################################
+# Beam settings and run                                #
+########################################################
+
+# Switch (not) to use the beam momentum spread, default is OFF
+#/cal/beam/isMomentumSpread false
+/cal/beam/isMomentumSpread true
+
+# selection of beam particles
+/gun/particle e-
+#/gun/particle proton
+#/gun/particle pi-
+#/gun/particle pi+
+
+# set kinetic energy of the beam
+/gun/energy 2 GeV
+
+# can be used, commented out is OK for the moment
+# /gun/momentumAmp 
+
+/tracking/verbose 0
+
+/run/printProgress 100
+
+/run/beamOn 1000
