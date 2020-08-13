@@ -1,28 +1,3 @@
-//
-// ********************************************************************
-// * License and Disclaimer                                           *
-// *                                                                  *
-// * The  Geant4 software  is  copyright of the Copyright Holders  of *
-// * the Geant4 Collaboration.  It is provided  under  the terms  and *
-// * conditions of the Geant4 Software License,  included in the file *
-// * LICENSE and available at  http://cern.ch/geant4/license .  These *
-// * include a list of copyright holders.                             *
-// *                                                                  *
-// * Neither the authors of this software system, nor their employing *
-// * institutes,nor the agencies providing financial support for this *
-// * work  make  any representation or  warranty, express or implied, *
-// * regarding  this  software system or assume any liability for its *
-// * use.  Please see the license in the file  LICENSE  and URL above *
-// * for the full disclaimer and the limitation of liability.         *
-// *                                                                  *
-// * This  code  implementation is the result of  the  scientific and *
-// * technical work of the GEANT4 collaboration.                      *
-// * By using,  copying,  modifying or  distributing the software (or *
-// * any work based  on the software)  you  agree  to acknowledge its *
-// * use  in  resulting  scientific  publications,  and indicate your *
-// * acceptance of all terms of the Geant4 Software license.          *
-// ********************************************************************
-//
 // $Id$
 //
 /// \file B4cDetectorConstruction.cc
@@ -178,6 +153,8 @@ void B4cDetectorConstruction::DefineMaterials()
   nistManager->FindOrBuildMaterial( "G4_lH2", fromIsotopes );
   nistManager->FindOrBuildMaterial( "G4_O", fromIsotopes );
   nistManager->FindOrBuildMaterial( "G4_lO2", fromIsotopes );
+  nistManager->FindOrBuildMaterial( "G4_Cu", fromIsotopes );
+  nistManager->FindOrBuildMaterial( "G4_KAPTON", fromIsotopes );
 
   // Vacuum
   G4double a;  // mass of a mole;
@@ -261,6 +238,250 @@ G4VPhysicalVolume* B4cDetectorConstruction::DefineVolumes()
   // Visualization attributes
   worldLV->SetVisAttributes( G4VisAttributes::Invisible );
 
+  // Coordinate :  coresoftware  | this
+  // x : thickness, vertical     | beam
+  // y : transverse              | transverse
+  // z : beam                    | vertical
+  
+  // int param
+  const int kNstrips_phi_cell =   256;
+  const int kNstrips_phi_sensor = 256;
+  //const int kNstrips_z_sensor_0 =   8;
+  const int kNstrips_x_sensor_0 =   8;
+  //const int kNstrips_z_sensor_1 =   5;
+  const int kNstrips_x_sensor_1 =   5;
+
+  // double param
+  //const double kFphx_x		= 0.032  * cm; // coresoftware
+  const double kFphx_z		= 0.032  * cm;
+  const double kFphx_y		= 0.27   * cm;
+  //const double kFphx_z		= 0.91   * cm;
+  const double kFphx_x		= 0.91   * cm;
+  //const double kFphx_offset_z	= 0.005  * cm;
+  const double kFphx_offset_x	= 0.005  * cm;
+  const double kGap_sensor_fphx = 0.1    * cm;  
+
+  //  const double kSi_glue_x	= 0.0014 * cm;
+  const double kSi_glue_z	= 0.0014 * cm;
+  //const double kFphx_glue_x	= 0.005  * cm;
+  const double kFphx_glue_z	= 0.005  * cm;
+
+  //const double kHdi_copper_x	= 0.0037 * cm;
+  const double kHdi_copper_z	= 0.0037 * cm;
+  //const double kHdi_edge_z	= 0.0    * cm;
+  const double kHdi_edge_x	= 0.0    * cm;
+  //  const double kHdi_kapton_x	= 0.038  * cm;
+  const double kHdi_kapton_z	= 0.038  * cm;
+  const double kHdi_y		= 3.8    * cm;
+
+  const double kSensor_edge_phi = 0.13   * cm;
+  //const double kSensor_edge_z	= 0.1    * cm;
+  const double kSensor_edge_x	= 0.1    * cm;
+  const double kSensor_offset_y = 0.     * cm;  
+
+  //const double kStrip_x		= 0.032  * cm;
+  const double kStrip_z		= 0.032  * cm;
+  const double kStrip_y		= 0.007  * cm;
+  //const double kStrip_z_0	= 1.6    * cm;
+  const double kStrip_x_0	= 1.6    * cm;
+  //const double kStrip_z_1	= 2.0    * cm;
+  const double kStrip_x_1	= 2.0    * cm;
+
+  // HDI: one for half ladder
+  //const double kHdi_y = kStrip_y * kNstrips_phi_sensor; // 1.9968 cm
+  const double kHdi_x = kStrip_x_0 * kNstrips_x_sensor_0 + 2 * kSensor_edge_x
+    + kStrip_x_1 * kNstrips_x_sensor_1 + 2 * kSensor_edge_x; // 23.2 cm
+  
+  std::cout << std::string( 100, '=' ) << std::endl;
+  std::cout << "kHdi_x = " << kHdi_x << std::endl;
+  std::cout << "kHdi_y = " << kHdi_y << std::endl;
+  std::cout << std::string( 100, '=' ) << std::endl;
+
+  // Ratation matrix to change the coordinate in the coresoftware repo to this codes
+  //G4RotationMatrix* rot_core2this = new G4RotationMatrix();
+  //rot_core2this->rotateY( 90 * deg );
+
+    /*
+  // SEGMENTATION_PHI //////////////////////////////////////
+  
+  const double kHalfladder_z =        40.00 ;
+  const double kHalfladder_inside_z = 23.9622;
+
+  const double kStave_straight_cooler_x = 0.03  ;
+  const double kStave_straight_cooler_y = 1.47684;
+  const double kStave_slant_cooler_y =   0.6322614829;
+  const double kStave_straight_outer_y =    0.3322;
+  const double kStave_straight_rohacell_y = 0.5884;
+  */  
+
+  double pos_z = 0.0;
+  //////////////////////////////////////////////////////////
+  // HDI                                                  //
+  //////////////////////////////////////////////////////////
+
+  // Kapton layer of HDI
+  G4VSolid* hdi_kapton = new G4Box( "HDI_kapton", kHdi_x / 2, kHdi_y / 2, kHdi_kapton_z / 2 );
+  G4LogicalVolume* hdi_kapton_lv = new G4LogicalVolume( hdi_kapton, G4Material::GetMaterial( "G4_KAPTON" ), "HDI_Kapton" );
+  hdi_kapton_lv->SetVisAttributes( kapton_vis_att );
+
+  new G4PVPlacement( 0, G4ThreeVector(0, 0, pos_z ), hdi_kapton_lv, "hdi_kapton", worldLV, false, 0, fCheckOverlaps );
+
+  // Copper layer of HDI
+  G4VSolid* hdi_copper = new G4Box( "HDI_copper", kHdi_x / 2, kHdi_y / 2, kHdi_copper_z / 2 );
+  G4LogicalVolume* hdi_copper_lv = new G4LogicalVolume( hdi_copper, G4Material::GetMaterial( "G4_Cu" ), "HDI_Cu" );
+  hdi_copper_lv->SetVisAttributes( cu_vis_att );
+
+  pos_z -= kHdi_kapton_z / 2 + kHdi_copper_z / 2;
+  G4ThreeVector pos_hdi_copper = G4ThreeVector( 0, 0, pos_z );
+  new G4PVPlacement( 0, pos_hdi_copper, hdi_copper_lv, "hdi_copper", worldLV, false, 0, fCheckOverlaps );
+
+  //////////////////////////////////////////////////////////
+  // FPHX chips                                           //
+  //////////////////////////////////////////////////////////
+  G4VSolid* fphx = new G4Box( "FPHX", kFphx_x / 2, kFphx_y / 2, kFphx_z / 2 );
+  //  G4LogicalVolume* fphx_lv[];
+
+
+  //////////////////////////////////////////////////////////
+  // Silicon sensors                                      //
+  //////////////////////////////////////////////////////////
+  // Si strip
+  // +-------------+
+  // +-------------+
+  
+  // Si cell, 2 types 
+  //
+  // +-------------+
+  // |- - - - - - -| 
+  // |- - - - - - -| 
+  // |- - - - - - -| 
+  // |- - - - - - -| 
+  // +-------------+
+  //
+  const double kSi_cell_0_x = kStrip_x_0;
+  const double kSi_cell_1_x = kStrip_x_1;
+  const double kSi_cell_0_y = kStrip_y * kNstrips_phi_sensor / 2;
+  const double kSi_cell_0_z = kStrip_z;  // thickness
+
+  G4VSolid* si_cell_0  = new G4Box( "Si_cell_0", kSi_cell_0_x / 2, kSi_cell_0_y / 2, kSi_cell_0_z / 2 );
+  G4LogicalVolume* si_cell_0_lv = new G4LogicalVolume( si_cell_0, defaultMaterial, "Si_cell_0" );
+  si_cell_0_lv->SetVisAttributes( wireframe_vis_att );
+
+  G4VSolid* si_cell_1  = new G4Box( "Si_cell_1", kSi_cell_1_x / 2, kSi_cell_0_y / 2, kSi_cell_0_z / 2 );
+  G4LogicalVolume* si_cell_1_lv = new G4LogicalVolume( si_cell_1, defaultMaterial, "Si_cell_1" );
+  si_cell_1_lv->SetVisAttributes( wireframe_vis_att );
+
+  // Si area
+  // +-------------+-------------+-------------+-------------+-------------+
+  // |- - - - - - -|- - - - - - -|- - - - - - -|- - - - - - -|- - - - - - -|
+  // |- - - - - - -|- - - - - - -|- - - - - - -|- - - - - - -|- - - - - - -|
+  // |- - - - - - -|- - - - - - -|- - - - - - -|- - - - - - -|- - - - - - -|
+  // |- - - - - - -|- - - - - - -|- - - - - - -|- - - - - - -|- - - - - - -|
+  // +-------------+-------------+-------------+-------------+-------------+
+  // |- - - - - - -|- - - - - - -|- - - - - - -|- - - - - - -|- - - - - - -|
+  // |- - - - - - -|- - - - - - -|- - - - - - -|- - - - - - -|- - - - - - -|
+  // |- - - - - - -|- - - - - - -|- - - - - - -|- - - - - - -|- - - - - - -|
+  // |- - - - - - -|- - - - - - -|- - - - - - -|- - - - - - -|- - - - - - -|
+  // +-------------+-------------+-------------+-------------+-------------+
+  const double kSi_area_0_x = kNstrips_x_sensor_0 * kSi_cell_0_x;
+  const double kSi_area_1_x = kNstrips_x_sensor_1 * kSi_cell_1_x;
+  const double kSi_area_0_y = kSi_cell_0_y;
+  const double kSi_area_0_z = kSi_cell_0_z;
+  
+  G4VSolid* si_area_0  = new G4Box( "Si_area_0", kSi_area_0_x / 2, kSi_area_0_y / 2, kSi_area_0_z / 2 );				    
+  G4LogicalVolume* si_area_0_lv = new G4LogicalVolume( si_area_0, defaultMaterial, "Si_area_0" );
+  si_area_0_lv->SetVisAttributes( wireframe_vis_att );
+
+  G4VSolid* si_area_1  = new G4Box( "Si_area_1", kSi_area_1_x / 2, kSi_area_0_y / 2, kSi_area_0_z / 2 );				    
+  G4LogicalVolume* si_area_1_lv = new G4LogicalVolume( si_area_1, defaultMaterial, "Si_area_1" );
+  si_area_1_lv->SetVisAttributes( wireframe_vis_att );
+
+
+  // Placement
+  new G4PVReplica( "name", si_cell_0_lv, si_area_0_lv, kXAxis, kNstrips_x_sensor_0, kStrip_x_0 );
+  new G4PVReplica( "name", si_cell_1_lv, si_area_1_lv, kXAxis, kNstrips_x_sensor_1, kStrip_x_1 );
+
+  //  double pos_x = kSi_area_0_x / 2;
+  double hdi_margin_x = (kHdi_x - kSi_area_0_x - kSi_area_1_x ) / 2;
+  double pos_x = kSi_area_0_x / 2 -( kHdi_x / 2 - kSi_area_1_x - hdi_margin_x );
+  pos_z -= kHdi_copper_z / 2 + kStrip_z / 2;
+  G4ThreeVector pos_si_0_up = G4ThreeVector( pos_x, kSi_area_0_y / 2,  pos_z );
+  new G4PVPlacement( 0, pos_si_0_up, si_area_0_lv, "si_area_0", worldLV, false, 0, fCheckOverlaps );
+
+  G4ThreeVector pos_si_0_down = G4ThreeVector(pos_x, -kSi_area_0_y / 2,  pos_z );
+  new G4PVPlacement( 0, pos_si_0_down, si_area_0_lv, "si_area_0", worldLV, false, 0, fCheckOverlaps );
+
+  // for shorter type
+  //pos_x = -kSi_area_1_x / 2;
+  //pos_x = -1 * (pos_x - kSi_area_0_x / 2 + kSi_area_1_x / 2 );
+  pos_x = -1 * (kSi_area_1_x / 2 - ( kHdi_x / 2 - kSi_area_1_x - hdi_margin_x ) );
+  G4ThreeVector pos_si_1_up = G4ThreeVector( pos_x, kSi_area_0_y / 2,  pos_z );
+  new G4PVPlacement( 0, pos_si_1_up, si_area_1_lv, "si_area_1", worldLV, false, 0, fCheckOverlaps );
+
+  G4ThreeVector pos_si_1_down = G4ThreeVector( pos_x, -kSi_area_0_y / 2,  pos_z );
+  new G4PVPlacement( 0, pos_si_1_down, si_area_1_lv, "si_area_1", worldLV, false, 0, fCheckOverlaps );
+
+  //  G4VSolid* si_strip_0 = new G4Box( "Si_strip_0", kStrip_x / 2 , kStrip_y / 2, kStrip_z_0 / 2 );
+
+  
+  /*G4LogicalVolume*
+      // FPHX
+      G4VSolid *fphx_box = new G4Box((boost::format("fphx_box_%d_%d") % inttlayer % itype).str(), fphx_x / 2., fphx_y / 2., fphx_z / 2.);
+      G4LogicalVolume *fphx_volume = new G4LogicalVolume(fphx_box, G4Material::GetMaterial("G4_Si"),
+                                                         (boost::format("fphx_volume_%d_%d") % inttlayer % itype).str(), 0, 0, 0);
+      if ((m_IsAbsorberActiveMap.find(inttlayer))->second > 0)
+      {
+        m_PassiveVolumeTuple.insert(make_pair(fphx_volume, make_tuple(inttlayer, PHG4InttDefs::FPHX)));
+      }
+      m_DisplayAction->AddVolume(fphx_volume, "FPHX");
+
+      const double gap_sensor_fphx = params->get_double_param("gap_sensor_fphx") * cm;
+
+      //  FPHX Container
+      // make a container for the FPHX chips needed for this sensor, and  then place them in the container
+      G4VSolid *fphxcontainer_box = new G4Box((boost::format("fphxcontainer_box_%d_%d") % inttlayer % itype).str(),
+                                              fphx_x / 2., fphx_y / 2., hdi_z / 2.);
+      G4LogicalVolume *fphxcontainer_volume = new G4LogicalVolume(fphxcontainer_box, G4Material::GetMaterial("G4_AIR"),
+                                                                  (boost::format("fphxcontainer_volume_%d_%d") % inttlayer % itype).str(), 0, 0, 0);
+      m_DisplayAction->AddVolume(fphxcontainer_volume, "FPHXContainer");
+
+      // Install multiple FPHX volumes in the FPHX container volume
+      // one FPHX chip per cell - each cell is 128 channels
+      const double fphx_offsetx = 0.;
+      const double fphx_offsety = 0.;      
+      int ncopy;
+      double offsetz, cell_length_z;
+
+      if (laddertype == PHG4InttDefs::SEGMENTATION_Z)  // vertical strips
+      {
+        // For laddertype 0, we have 5 cells per sensor, but the strips are vertical, so we have to treat it specially
+        ncopy = nstrips_z_sensor / 128.0;
+      }
+      else if (laddertype == PHG4InttDefs::SEGMENTATION_PHI)
+      {
+        ncopy = nstrips_z_sensor;
+      }
+      else
+      {
+        cout << PHWHERE << "invalid laddertype " << laddertype << endl;
+        gSystem->Exit(1);
+        // this is just to make the optimizer happy which otherwise complains about possibly
+        // uninitialized variables. It doesn't know gSystem->Exit(1) quits,
+        // this exit here terminates the program for it
+        exit(1);
+      }
+      cell_length_z = strip_z * nstrips_z_sensor / ncopy;
+      offsetz = (ncopy % 2 == 0) ? -2. * cell_length_z / 2. * double(ncopy / 2) + cell_length_z / 2. + fphx_offset_z : -2. * cell_length_z / 2. * double(ncopy / 2) + fphx_offset_z;
+
+      G4VPVParameterisation *fphxparam = new PHG4InttFPHXParameterisation(fphx_offsetx, +fphx_offsety, offsetz, 2. * cell_length_z / 2., ncopy);
+      new G4PVParameterised((boost::format("fphxcontainer_%d_%d") % inttlayer % itype).str(),
+                            fphx_volume, fphxcontainer_volume, kZAxis, ncopy, fphxparam, OverlapCheck());
+  */  
+
+
+
+  
+  /*
   // for Ecal
   DefineVolumes_Ecal( worldLV );
 
@@ -277,6 +498,7 @@ G4VPhysicalVolume* B4cDetectorConstruction::DefineVolumes()
 
   // not used, to be deleted
   //DefineVolumes_NotUsed( worldLV );
+  */
   
   // Always return the physical World
   return worldPV;
@@ -844,15 +1066,33 @@ void B4cDetectorConstruction::DefineVisAttributes()
   //  surroundingsCol = new G4VisAttributes( true , G4Colour( 1, 1, 1, 1 ) ); // white
   surroundingsCol = new G4VisAttributes( true , G4Colour( 0.0, 0.0, 0.0, 0.9 ) ); 
   //  surroundingsCol = new G4VisAttributes( true , G4Colour( 0.4, 0.4, 0.4, 1 ) ); 
-  surroundingsCol->SetForceWireframe( true );
+  //  surroundingsCol->SetForceWireframe( true );
   //  surroundingsCol->SetForceSolid( true );
 
+
+  wireframe_vis_att = new G4VisAttributes( true, G4Colour(0, 0, 0, 1) );
+  wireframe_vis_att->SetForceWireframe( true );
+
+  cu_vis_att = new G4VisAttributes( true, G4Colour( 0.7, 0.4, 0, 1) );
+  cu_vis_att->SetForceSolid( true );
+
+  kapton_vis_att = new G4VisAttributes( true, G4Colour(0.0, 0.590, 1.0, 0.5 ) ); // blue
+  kapton_vis_att->SetForceSolid( true );
+
+  si_vis_att = new G4VisAttributes( true, G4Colour(0, 0, 1, 0.5) ); // transparent blue
+  si_vis_att->SetForceSolid( true );
+
+  fphx_vis_att = new G4VisAttributes( true, G4Colour(1.0, 0.843, 0.0, 0.5) ); // HTML gold
+  fphx_vis_att->SetForceSolid( true );
+
+  
 }
 
 //void B4cDetectorConstruction::SetMagField(G4double fieldValue)
 void B4cDetectorConstruction::ConstructSDandField()
 {
 
+  /*
   // Sensitive detectors
   B4cCalorimeterSD* absoSD[num_of_towers_hcal][num_of_towers_hcal];
   B4cCalorimeterSD* gapSD[num_of_towers_hcal][num_of_towers_hcal];
@@ -985,7 +1225,7 @@ void B4cDetectorConstruction::ConstructSDandField()
   B4cCalorimeterSD* lid_downstream_SD = new B4cCalorimeterSD( "Lid_downstream_SD", "Lid_downstream_HitsCollection", 1 );
   G4SDManager::GetSDMpointer()->AddNewDetector( lid_downstream_SD );
   SetSensitiveDetector( "Lid_downstream", lid_downstream_SD );
-
+  */
 
   /*
   // Apply a global uniform magnetic field along X axis

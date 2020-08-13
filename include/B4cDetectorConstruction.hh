@@ -156,6 +156,15 @@ private:
   G4VisAttributes* wallCol;
   G4VisAttributes* surroundingsCol;
 
+
+  G4VisAttributes* wireframe_vis_att;
+  G4VisAttributes* cu_vis_att;
+  G4VisAttributes* kapton_vis_att;
+  G4VisAttributes* si_vis_att;
+  G4VisAttributes* fphx_vis_att;
+
+
+  
   G4bool isSurroundings = true;
 
   

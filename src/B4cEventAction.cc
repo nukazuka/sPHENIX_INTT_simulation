@@ -88,6 +88,7 @@ void B4cEventAction::BeginOfEventAction(const G4Event* /*event*/)
 void B4cEventAction::GetHitsCollectionIDs()
 {
 
+  /*
   // skip everything if IDs were already got
   if ( fEcalAbsHCID != -1 )
     return;
@@ -185,6 +186,7 @@ void B4cEventAction::GetHitsCollectionIDs()
 
   ID_lid_upstream = G4SDManager::GetSDMpointer()->GetCollectionID( "Lid_upstream_HitsCollection" );
   ID_lid_downstream = G4SDManager::GetSDMpointer()->GetCollectionID( "Lid_downstream_HitsCollection" );
+  */
 }
 
 void B4cEventAction::EndOfEventAction(const G4Event* event)
@@ -196,8 +198,7 @@ void B4cEventAction::EndOfEventAction(const G4Event* event)
   // Print per event (modulo n)
   auto eventID = event->GetEventID();
   auto printModulo = G4RunManager::GetRunManager()->GetPrintProgress();
-
-
+  /*
   //////////////////////////////////////////////////////////////////////////////
   // Ecal                                                                     //
   //////////////////////////////////////////////////////////////////////////////
@@ -314,6 +315,7 @@ void B4cEventAction::EndOfEventAction(const G4Event* event)
       edep_lid_downstream = testHit->GetEdep() / GeV;
      
     }
+  */
   
   auto analysisManager = G4AnalysisManager::Instance();
   /*
@@ -326,7 +328,7 @@ void B4cEventAction::EndOfEventAction(const G4Event* event)
   }
   */
 
-
+  /*
   // fill ntuple, if the wall and/or the surrounding blocks are off, it's OK to use the variables
   // because their default values are 0.0
   G4double edep_total = edep_ecal + edep_hcal
@@ -350,7 +352,8 @@ void B4cEventAction::EndOfEventAction(const G4Event* event)
   analysisManager->FillNtupleDColumn(10, edep_surroundings_hcal ); // 10: LeakHcal
   analysisManager->FillNtupleDColumn(11, edep_lid_upstream);       // 11: LeakUpstream
   analysisManager->FillNtupleDColumn(12, edep_lid_downstream);     // 12: LeakDownsstream
-
+  */
+  
   // Write vector values
-  analysisManager->AddNtupleRow();
+  //analysisManager->AddNtupleRow();
 }
