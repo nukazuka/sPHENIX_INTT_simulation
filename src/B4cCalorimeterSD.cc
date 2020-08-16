@@ -45,13 +45,9 @@ B4cCalorimeterSD::B4cCalorimeterSD(
   collectionName.insert(hitsCollectionName);
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 B4cCalorimeterSD::~B4cCalorimeterSD() 
 { 
 }
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void B4cCalorimeterSD::Initialize(G4HCofThisEvent* hce)
 {
@@ -70,8 +66,6 @@ void B4cCalorimeterSD::Initialize(G4HCofThisEvent* hce)
     fHitsCollection->insert(new B4cCalorHit());
   }
 }
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 G4bool B4cCalorimeterSD::ProcessHits(G4Step* step, 
                                      G4TouchableHistory*)
@@ -112,8 +106,6 @@ G4bool B4cCalorimeterSD::ProcessHits(G4Step* step,
   return true;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 void B4cCalorimeterSD::EndOfEvent(G4HCofThisEvent*)
 {
   if ( verboseLevel>1 ) { 
@@ -125,5 +117,3 @@ void B4cCalorimeterSD::EndOfEvent(G4HCofThisEvent*)
      for ( G4int i=0; i<nofHits; i++ ) (*fHitsCollection)[i]->Print();
   }
 }
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

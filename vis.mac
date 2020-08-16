@@ -31,7 +31,8 @@
 /vis/drawVolume
 
 # Specify view angle:
-/vis/viewer/set/viewpointThetaPhi 120. 150.
+#/vis/viewer/set/viewpointThetaPhi 120. 150.
+/vis/viewer/set/viewpointThetaPhi 90 0 deg
 #/vis/viewer/set/viewpointThetaPhi 45 45
 
 # Specify zoom value:
@@ -84,7 +85,7 @@
 # For file-based drivers, use this to create an empty detector view:
 #/vis/viewer/flush
 
-/vis/ogl/set/displayListLimit 500000
+/vis/ogl/set/displayListLimit 5000000
 
 # Set background color
 /vis/viewer/set/background white

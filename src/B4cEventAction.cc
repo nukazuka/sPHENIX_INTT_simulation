@@ -30,17 +30,24 @@
 #include "B4cEventAction.hh"
 G4double B4cEventAction::beam_energy;
 
-B4cEventAction::B4cEventAction()
+/*B4cEventAction::B4cEventAction()
  : G4UserEventAction(),
  fEcalAbsHCID(-1),
  fEcalGapHCID(-1),
  fHcalAbsHCID(-1),
  fHcalGapHCID(-1)
  {}
+*/
+B4cEventAction::B4cEventAction()
+ : G4UserEventAction(),
+   hc_id_si_0(-1),
+   hc_id_si_1(-1)
+{}
 
 B4cEventAction::~B4cEventAction()
 {}
 
+// definition: using B4cCalorHitsCollection = G4THitsCollection<B4cCalorHit>;
 B4cCalorHitsCollection*
 B4cEventAction::GetHitsCollection(G4int hcID,
                                   const G4Event* event) const
@@ -82,7 +89,9 @@ void B4cEventAction::PrintEventStatistics(
 
 void B4cEventAction::BeginOfEventAction(const G4Event* /*event*/)
 {
-  //std::cout << std::string( 100 , '-' ) << std::endl;
+  std::cout << std::string( 100 , '-' ) << std::endl;
+  std::cout << " Start event"  << std::endl;
+  
 }
 
 void B4cEventAction::GetHitsCollectionIDs()
@@ -191,10 +200,27 @@ void B4cEventAction::GetHitsCollectionIDs()
 
 void B4cEventAction::EndOfEventAction(const G4Event* event)
 {
+  std::cout << " Processing for the end of this event" << std::endl;
 
   // Get hits collections IDs (only once)
-  GetHitsCollectionIDs();
+  if ( hc_id_si_0 == -1 ) {
+    hc_id_si_0
+      = G4SDManager::GetSDMpointer()->GetCollectionID( "SiStrip0HitsCollection" );
+    hc_id_si_1
+      = G4SDManager::GetSDMpointer()->GetCollectionID( "SiStrip1HitsCollection" );
+  }
 
+  //  GetHitsCollectionIDs();
+  // Get hits collections
+  B4cCalorHitsCollection* hc_si_0 = GetHitsCollection( hc_id_si_0, event );
+  B4cCalorHitsCollection* hc_si_1 = GetHitsCollection( hc_id_si_0, event );
+
+  for( int i=0; i<hc_si_0->entries()-1; i++ )
+    {
+      auto hc = (*hc_si_0)[i];
+      std::cout << i << "\t" << hc->GetEdep() << std::endl;
+    }
+  
   // Print per event (modulo n)
   auto eventID = event->GetEventID();
   auto printModulo = G4RunManager::GetRunManager()->GetPrintProgress();
@@ -317,7 +343,7 @@ void B4cEventAction::EndOfEventAction(const G4Event* event)
     }
   */
   
-  auto analysisManager = G4AnalysisManager::Instance();
+  //  auto analysisManager = G4AnalysisManager::Instance();
   /*
   if ( ( printModulo > 0 ) && ( eventID % printModulo == 0 ) ) {
     G4cout << "---> End of event: " << eventID << G4endl;

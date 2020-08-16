@@ -55,7 +55,7 @@ B4RunAction::B4RunAction( B4PrimaryGeneratorAction* pga_arg ) : G4UserRunAction(
   //analysisManager->SetVerboseLevel( 9999 ); // usesless
   analysisManager->SetNtupleMerging(true);
 
-  /*
+
   // Creating ntuple
   analysisManager->CreateNtuple("tr", "Edep");
 
@@ -101,7 +101,7 @@ B4RunAction::B4RunAction( B4PrimaryGeneratorAction* pga_arg ) : G4UserRunAction(
   analysisManager->CreateNtupleDColumn( "HcalTower"	, edep_tower_hcal );
   analysisManager->CreateNtupleDColumn( "HcalTowerAbs"	, edep_absorber_tower_hcal );
   analysisManager->CreateNtupleDColumn( "HcalTowerGap"	, edep_gap_tower_hcal );
-  */
+
   analysisManager->FinishNtuple();
 
 }

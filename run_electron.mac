@@ -40,7 +40,8 @@
 #/gun/particle pi+
 
 # set kinetic energy of the beam
-/gun/energy 2 GeV
+#/gun/energy 2 GeV
+/gun/energy 500 keV
 
 # can be used, commented out is OK for the moment
 # /gun/momentumAmp 
@@ -49,4 +50,4 @@
 
 /run/printProgress 100
 
-/run/beamOn 1000
+/run/beamOn 1

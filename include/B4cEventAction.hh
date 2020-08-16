@@ -50,8 +50,6 @@
 #include <numeric> // for accumulate
 #include <iomanip>
 
-
-
 #include "Randomize.hh"
 
 /// Event action class
@@ -104,9 +102,8 @@ private:
   G4int  fHcalGapHCID;
   G4int  fHcalAbsHCID;
 
-
-
-  
+  G4int  hc_id_si_0;
+  G4int  hc_id_si_1;  
 };
 
 #endif

@@ -100,7 +100,7 @@ private:
   void DefineVolumes_Surroundings( G4LogicalVolume* worldLV );
   void DefineVolumes_NotUsed( G4LogicalVolume* worldLV );
 
-  void SetWallThickness( G4double thickness );
+  //void SetWallThickness( G4double thickness );
   // data members
   //  static G4ThreadLocal G4GlobalMagFieldMessenger*  fMagFieldMessenger;
   // magnetic field messenger
