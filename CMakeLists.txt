@@ -31,9 +31,6 @@ endif()
 #add_executable(Main MainEvent.cxx)
 #target_link_libraries(Main Event)
 
-
-
-
 #----------------------------------------------------------------------------
 # Setup Geant4 include directories and compile definitions
 # Setup include directory for this project
@@ -51,9 +48,9 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
 #
-add_executable( cal exampleB4c.cc ${sources} ${headers})
-#target_link_libraries(cal ${Geant4_LIBRARIES} ${ROOT_LIBRARIES})
-target_link_libraries(cal ${Geant4_LIBRARIES} )
+add_executable( intt exampleB4c.cc ${sources} ${headers})
+#target_link_libraries( intt ${Geant4_LIBRARIES} ${ROOT_LIBRARIES})
+target_link_libraries( intt ${Geant4_LIBRARIES} )
 
 #----------------------------------------------------------------------------
 # Compiler options
@@ -99,4 +96,4 @@ endforeach()
 #----------------------------------------------------------------------------
 # Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX
 #
-install(TARGETS cal DESTINATION bin)
+install(TARGETS intt DESTINATION bin)
