@@ -23,35 +23,41 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-//
-/// \file B4cActionInitialization.cc
-/// \brief Implementation of the B4cActionInitialization class
+// 
+/// \file SteppingAction.hh
+/// \brief Definition of the SteppingAction class
 
-#include "B4cActionInitialization.hh"
+#ifndef SteppingAction_h
+#define SteppingAction_h 1
 
-B4cActionInitialization::B4cActionInitialization(B4cDetectorConstruction* det_const_arg)
-  : G4VUserActionInitialization(),
-    detector_constraction_( det_const_arg )
-{}
+#include "G4Step.hh"
+#include "G4RunManager.hh"
+#include "G4UserSteppingAction.hh"
 
-B4cActionInitialization::~B4cActionInitialization()
-{}
+// class B4DetectorConstruction;
+// class B4cEventAction;
 
-void B4cActionInitialization::BuildForMaster() const
+#include "B4cDetectorConstruction.hh"
+#include "B4cEventAction.hh"
+
+/// Stepping action class.
+///
+/// In UserSteppingAction() there are collected the energy deposit and track 
+/// lengths of charged particles in Absober and Gap layers and
+/// updated in B4cEventAction.
+
+class SteppingAction : public G4UserSteppingAction
 {
-  SetUserAction( new B4RunAction( new B4PrimaryGeneratorAction() ) );
-}
+public:
+  SteppingAction(const B4cDetectorConstruction* detectorConstruction,
+                    B4cEventAction* eventAction);
+  virtual ~SteppingAction();
 
-void B4cActionInitialization::Build() const
-{
-  auto pga = new B4PrimaryGeneratorAction();
-  SetUserAction( pga );
-  //  SetUserAction(new B4PrimaryGeneratorAction);
-  
-  SetUserAction( new B4RunAction( pga ) );
-  B4cEventAction* event_action = new B4cEventAction;
-  SetUserAction( event_action );
-  SetUserAction( new TrackingAction( pga ) );
-  SetUserAction( new SteppingAction(detector_constraction_, event_action)  );
-  //SetUserAction(new SteppingAction(fDetConstruction,eventAction));
-}  
+  virtual void UserSteppingAction(const G4Step* step);
+    
+private:
+  const B4cDetectorConstruction* fDetConstruction;
+  B4cEventAction*  fEventAction;  
+};
+
+#endif

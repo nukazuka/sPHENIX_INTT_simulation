@@ -67,8 +67,10 @@ public:
   virtual void  BeginOfEventAction(const G4Event* event);
   virtual void    EndOfEventAction(const G4Event* event);
 
+  void AddWhatever( G4double de, G4double dl );
+  
   static G4double beam_energy;
-
+  
 private:
   // methods
   B4cCalorHitsCollection* GetHitsCollection(G4int hcID, const G4Event* event) const;

@@ -162,10 +162,10 @@ private:
   G4VisAttributes* kapton_vis_att;
   G4VisAttributes* si_vis_att;
   G4VisAttributes* fphx_vis_att;
-
-
   
   G4bool isSurroundings = true;
+
+  G4VPhysicalVolume* whatever;
 
   
 public:
@@ -195,6 +195,9 @@ public:
   G4double GetThicknessGapEcal(){ return gapThickness_ecal;};
   G4double GetThicknessGapHcal(){ return gapThickness_hcal;};
 
+
+  const G4VPhysicalVolume* GetPV() const;
+  
 };
 
 

@@ -34,9 +34,9 @@ TrackingAction::TrackingAction( B4PrimaryGeneratorAction* prim )
    fPrimary(prim)
 { }
 
-void TrackingAction::PreUserTrackingAction(const G4Track*)
+void TrackingAction::PreUserTrackingAction(const G4Track* aTrack)
 {
-/*
+  /*
   //debug  
   const G4DynamicParticle* dynamic = aTrack->GetDynamicParticle();
   G4double dynamCharge = dynamic->GetCharge();
@@ -56,7 +56,7 @@ void TrackingAction::PreUserTrackingAction(const G4Track*)
     << "\n dynamMass= " << G4BestUnit (dynamMass, "Energy")
     << "   dynam-pdg= " << G4BestUnit (dif2     , "Energy")
     << G4endl;          
-*/             
+  */
 }
 
 void TrackingAction::PostUserTrackingAction(const G4Track* aTrack)

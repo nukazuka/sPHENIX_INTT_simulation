@@ -119,7 +119,7 @@ int main(int argc,char** argv)
   auto physicsList = new FTFP_BERT;
   runManager->SetUserInitialization(physicsList);
 
-  auto actionInitialization = new B4cActionInitialization();
+  auto actionInitialization = new B4cActionInitialization( detConstruction );
   runManager->SetUserInitialization(actionInitialization);
 
   // Initialize visualization

@@ -13,7 +13,8 @@ B4cDetectorConstruction::B4cDetectorConstruction()
     //   fMagField(0),
     fCheckOverlaps(true),
     isSurroundings(false),
-    wallThickness(0.0)
+    wallThickness(0.0),
+    whatever( nullptr )
 {
 
   DefineCommands();
@@ -549,7 +550,7 @@ G4VPhysicalVolume* B4cDetectorConstruction::DefineVolumes()
   // [] [][] [][][]   [][] [][][] [][]   [][][] [][] []
 
   //  G4VSolid* si_strip_0 = new G4Box( "Si_strip_0", kStrip_x / 2 , kStrip_y / 2, kStrip_z_0 / 2 );
-  new G4PVPlacement( 0, G4ThreeVector(0, 0, 0), half_ladder_lv, "HalfLadder", worldLV, false, 0, fCheckOverlaps );
+  whatever = new G4PVPlacement( 0, G4ThreeVector(0, 0, 0), half_ladder_lv, "HalfLadder", worldLV, false, 0, fCheckOverlaps );
   
   /*G4LogicalVolume*
       // FPHX
@@ -773,4 +774,11 @@ void B4cDetectorConstruction::ConstructSDandField()
   SetSensitiveDetector( "Lid_downstream", lid_downstream_SD );
   */
 
+}
+
+
+
+const G4VPhysicalVolume* B4cDetectorConstruction::GetPV() const
+{ 
+  return whatever;
 }

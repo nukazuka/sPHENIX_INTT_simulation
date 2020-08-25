@@ -87,6 +87,12 @@ void B4cEventAction::PrintEventStatistics(
      */
 }
 
+void B4cEventAction::AddWhatever( G4double de, G4double dl )
+{
+
+
+}
+
 void B4cEventAction::BeginOfEventAction(const G4Event* /*event*/)
 {
   std::cout << std::string( 100 , '-' ) << std::endl;
@@ -215,11 +221,13 @@ void B4cEventAction::EndOfEventAction(const G4Event* event)
   B4cCalorHitsCollection* hc_si_0 = GetHitsCollection( hc_id_si_0, event );
   B4cCalorHitsCollection* hc_si_1 = GetHitsCollection( hc_id_si_0, event );
 
+  /*
   for( int i=0; i<hc_si_0->entries()-1; i++ )
     {
       auto hc = (*hc_si_0)[i];
       std::cout << i << "\t" << hc->GetEdep() << std::endl;
     }
+  */
   
   // Print per event (modulo n)
   auto eventID = event->GetEventID();

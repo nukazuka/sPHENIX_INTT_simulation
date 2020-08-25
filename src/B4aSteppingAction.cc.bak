@@ -23,35 +23,65 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-//
-/// \file B4cActionInitialization.cc
-/// \brief Implementation of the B4cActionInitialization class
+// 
+/// \file SteppingAction.cc
+/// \brief Implementation of the SteppingAction class
 
-#include "B4cActionInitialization.hh"
+#include "SteppingAction.hh"
 
-B4cActionInitialization::B4cActionInitialization(B4cDetectorConstruction* det_const_arg)
-  : G4VUserActionInitialization(),
-    detector_constraction_( det_const_arg )
-{}
 
-B4cActionInitialization::~B4cActionInitialization()
-{}
-
-void B4cActionInitialization::BuildForMaster() const
+SteppingAction::SteppingAction(
+                      const B4cDetectorConstruction* detectorConstruction,
+                      B4cEventAction* eventAction)
+  : G4UserSteppingAction(),
+    fDetConstruction(detectorConstruction),
+    fEventAction(eventAction)
 {
-  SetUserAction( new B4RunAction( new B4PrimaryGeneratorAction() ) );
+
+  std::cout << std::string( 100, '-' ) << std::endl;
+  std::cout << "SteppingAction::SteppingAction(" << std::endl;
+  
 }
 
-void B4cActionInitialization::Build() const
+SteppingAction::~SteppingAction()
+{}
+
+
+void SteppingAction::UserSteppingAction(const G4Step* step)
 {
-  auto pga = new B4PrimaryGeneratorAction();
-  SetUserAction( pga );
-  //  SetUserAction(new B4PrimaryGeneratorAction);
+
+  //G4cout << std::string( 100, '-' ) << G4endl;
+  std::cout << std::string( 100, '-' ) << G4endl;
+  std::cout << "void SteppingAction::UserSteppingAction(const G4Step* step)" << G4endl;
   
-  SetUserAction( new B4RunAction( pga ) );
-  B4cEventAction* event_action = new B4cEventAction;
-  SetUserAction( event_action );
-  SetUserAction( new TrackingAction( pga ) );
-  SetUserAction( new SteppingAction(detector_constraction_, event_action)  );
-  //SetUserAction(new SteppingAction(fDetConstruction,eventAction));
-}  
+  // Collect energy and track length step by step
+
+  // get volume of the current step
+  auto volume = step->GetPreStepPoint()->GetTouchableHandle()->GetVolume();
+  
+  // energy deposit
+  auto edep = step->GetTotalEnergyDeposit();
+  
+  // step length
+  G4double stepLength = 0.;
+  if ( step->GetTrack()->GetDefinition()->GetPDGCharge() != 0. ) {
+    stepLength = step->GetStepLength();
+  }
+
+
+  if ( volume == fDetConstruction->GetPV() ) {
+    G4cout << edep << "\t" << stepLength << G4endl;
+    //fEventAction->AddAbs(edep,stepLength);
+    fEventAction->AddWhatever(edep,stepLength);
+  }
+  
+  /*
+  if ( volume == fDetConstruction->GetGapPV() ) {
+    fEventAction->AddGap(edep,stepLength);
+  }
+
+  */
+    
+}
+
+

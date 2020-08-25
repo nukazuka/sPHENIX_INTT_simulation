@@ -35,6 +35,7 @@
 #include "B4RunAction.hh"
 #include "B4cEventAction.hh"
 #include "TrackingAction.hh"
+#include "SteppingAction.hh"
 
 /// Action initialization class.
 ///
@@ -42,7 +43,7 @@
 class B4cActionInitialization : public G4VUserActionInitialization
 {
 public:
-  B4cActionInitialization();
+  B4cActionInitialization( B4cDetectorConstruction* det_const_arg );
   virtual ~B4cActionInitialization();
   
   virtual void BuildForMaster() const;
@@ -50,6 +51,8 @@ public:
 private:
   //  B4PrimaryGeneratorAction* pga = new B4PrimaryGeneratorAction();
   //B4PrimaryGeneratorAction* pga = new B4PrimaryGeneratorAction();
+  B4cDetectorConstruction* detector_constraction_;
+  B4cEventAction* event_action_;
 };
 
 #endif
